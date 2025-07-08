@@ -2,6 +2,7 @@ package com.example.agendador_tarefas.controller;
 
 import com.example.agendador_tarefas.business.dto.TarefasDTO;
 import com.example.agendador_tarefas.business.service.TarefasService;
+import com.example.agendador_tarefas.infrastructure.enums.StatusNotificacaoEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -45,4 +46,11 @@ public class TarefasController {
         tarefasService.deletarPorId(id);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping
+    public ResponseEntity<TarefasDTO> atualizaStatusNotificacao(@RequestParam("status") StatusNotificacaoEnum status,
+                                                                @RequestParam("id")String id){
+        return ResponseEntity.ok(tarefasService.atualizaStatusNotificacao(status, id));
+    }
+
 }

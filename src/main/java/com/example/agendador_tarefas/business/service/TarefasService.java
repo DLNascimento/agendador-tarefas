@@ -55,4 +55,17 @@ public class TarefasService {
 
     }
 
+    public TarefasDTO atualizaStatusNotificacao(StatusNotificacaoEnum status, String id) {
+
+        TarefasEntity entity = repository.findById(id).
+                orElseThrow(
+                        () -> new ResourceNotFoundException(
+                                "id não encontrado " + id));
+
+        entity.setStatusNotificacaoEnum(status);
+
+        return tarefasMapper.paraTarefasDTO(entity);
+
+    }
+
 }
