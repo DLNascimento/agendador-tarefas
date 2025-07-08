@@ -40,4 +40,9 @@ public class TarefasController {
         return ResponseEntity.ok(tarefas);
 
     }
+    @DeleteMapping
+    public ResponseEntity<Void> deletePorId(@RequestParam("id")String id){
+        tarefasService.deletarPorId(id);
+        return ResponseEntity.ok().build();
+    }
 }

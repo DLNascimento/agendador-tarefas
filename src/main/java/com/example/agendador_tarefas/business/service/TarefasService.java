@@ -4,6 +4,7 @@ import com.example.agendador_tarefas.business.dto.TarefasDTO;
 import com.example.agendador_tarefas.business.mapper.TarefasMapper;
 import com.example.agendador_tarefas.infrastructure.entity.TarefasEntity;
 import com.example.agendador_tarefas.infrastructure.enums.StatusNotificacaoEnum;
+import com.example.agendador_tarefas.infrastructure.exception.ResourceNotFoundException;
 import com.example.agendador_tarefas.infrastructure.repository.TarefasRepository;
 import com.example.agendador_tarefas.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,22 @@ public class TarefasService {
         return tarefasMapper.paraListaTarefasDTO(repository.findByDataEventoBetween(dataInicial, dataFinal));
 
     }
-    public List<TarefasDTO> buscarEventosPorEmail(String token){
+
+    public List<TarefasDTO> buscarEventosPorEmail(String token) {
 
         String emailUsuario = jwtUtil.extractUsername(token.substring(7));
         return tarefasMapper.paraListaTarefasDTO(repository.findByEmailUsuario(emailUsuario));
+
+    }
+
+    public void deletarPorId(String id) {
+
+        try {
+            repository.deleteById(id);
+
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("id inexistente" + id, e.getCause());
+        }
 
     }
 
