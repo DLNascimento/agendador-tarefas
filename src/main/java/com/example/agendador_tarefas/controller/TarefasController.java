@@ -53,4 +53,10 @@ public class TarefasController {
         return ResponseEntity.ok(tarefasService.atualizaStatusNotificacao(status, id));
     }
 
+    @PutMapping
+    public ResponseEntity<TarefasDTO> updateTarefa(@RequestBody TarefasDTO dto,
+                                                   @RequestParam("id")String id){
+        return ResponseEntity.ok(tarefasService.updateTarefas(dto, id));
+    }
+
 }

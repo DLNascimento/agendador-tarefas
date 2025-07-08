@@ -2,6 +2,7 @@ package com.example.agendador_tarefas.business.service;
 
 import com.example.agendador_tarefas.business.dto.TarefasDTO;
 import com.example.agendador_tarefas.business.mapper.TarefasMapper;
+import com.example.agendador_tarefas.business.mapper.TarefasUpdateMapper;
 import com.example.agendador_tarefas.infrastructure.entity.TarefasEntity;
 import com.example.agendador_tarefas.infrastructure.enums.StatusNotificacaoEnum;
 import com.example.agendador_tarefas.infrastructure.exception.ResourceNotFoundException;
@@ -19,6 +20,7 @@ public class TarefasService {
 
     private final TarefasRepository repository;
     private final TarefasMapper tarefasMapper;
+    private final TarefasUpdateMapper tarefasUpdateMapper;
     private final JwtUtil jwtUtil;
 
 
@@ -57,14 +59,31 @@ public class TarefasService {
 
     public TarefasDTO atualizaStatusNotificacao(StatusNotificacaoEnum status, String id) {
 
-        TarefasEntity entity = repository.findById(id).
-                orElseThrow(
-                        () -> new ResourceNotFoundException(
-                                "id não encontrado " + id));
+        try {
+            TarefasEntity entity = repository.findById(id).
+                    orElseThrow(
+                            () -> new ResourceNotFoundException(
+                                    "id não encontrado " + id));
+            entity.setStatusNotificacaoEnum(status);
 
-        entity.setStatusNotificacaoEnum(status);
+            return tarefasMapper.paraTarefasDTO(entity);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Erro ao tentar atualizar o Status " + e.getCause());
+        }
 
-        return tarefasMapper.paraTarefasDTO(entity);
+
+    }
+
+    public TarefasDTO updateTarefas(TarefasDTO tarefasDTO, String id) {
+
+        try {
+            TarefasEntity entity = repository.findById(id).
+                    orElseThrow(() -> new ResourceNotFoundException("tarefa não encontrada " + id));
+            tarefasUpdateMapper.updateTarefas(tarefasDTO, entity);
+            return tarefasMapper.paraTarefasDTO(repository.save(entity));
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Erro na tentativa de atualização " + e.getCause());
+        }
 
     }
 
